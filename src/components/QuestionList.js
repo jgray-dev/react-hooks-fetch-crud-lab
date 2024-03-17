@@ -1,10 +1,39 @@
-import React from "react";
+import QuestionItem from "./QuestionItem";
 
-function QuestionList() {
+function QuestionList({
+  questions,
+  handleDelete,
+  setUpdateQuestion,
+  updateQuestion,
+}) {
+  function changeAnswer(id, newInt) {
+    console.log(`http://localhost:4000/questions/${id}`, newInt);
+    fetch(`http://localhost:4000/questions/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        correctIndex: newInt,
+      }),
+    }).then(() => {
+      setUpdateQuestion(!updateQuestion);
+    });
+  }
+
   return (
     <section>
       <h1>Quiz Questions</h1>
-      <ul>{/* display QuestionItem components here after fetching */}</ul>
+      <ul>
+        {questions.map((question) => (
+          <QuestionItem
+            key={question.id}
+            question={question}
+            deleteFunction={handleDelete}
+            changeAnswer={changeAnswer}
+          />
+        ))}
+      </ul>
     </section>
   );
 }
